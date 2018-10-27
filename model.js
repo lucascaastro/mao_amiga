@@ -123,5 +123,104 @@ pool.connect(function(err, client, done) {
   });
 });
 });
+//VAGAS
+// rota com protocolo GET para seleção no banco de dados
+app.get('/vagas', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err)
+            return console.error('error fetching client from pool', err);
+        client.query('SELECT * FROM vagas ORDER BY id',
+            function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                }
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                console.log(result.rows);
+                res.json(result.rows); // servidor retorna a consulta em formato json
+            });
+    });
+});
+//get que retorna pelo id_cliente
+app.get('/vagas/:id', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err)
+            return console.error('error fetching client from pool', err);
+        client.query('SELECT * FROM vagas WHERE id = ' + req.params.id,
+            function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                }
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                console.log(result.rows);
+                res.json(result.rows); // servidor retorna a consulta em formato json
+            });
+    });
+});
+
+// rota com protocolo POST para inserção no banco de dados
+app.post('/vagas', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("INSERT INTO vagas (descricaovaga,dtinicio,dtfim,id_instituicao,titulo) " +
+            "VALUES ('" + req.body.descricaovaga + "','" + req.body.dtinicio + "','" + req.body.dtfim + "','" + req.body.id_instituicao + "','" + req.body.titulo + "')", function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+
+// rota com protocolo PUT para atualização no banco de dados
+app.put('/vagas', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("UPDATE vagas SET " +
+            "descricaovaga = '" + req.body.descricaovaga + "', " +
+            "dtinicio = '" + req.body.dtinicio + "', " +
+            "dtfim = '" + req.body.dtfim + "', " +
+            "id_instituicao = '" + req.body.id_instituicao + "', " +
+            "titulo = '" + req.body.titulo + "' " +
+            "WHERE id = " + req.body.id, function (err, result) {
+            console.log(err, result)
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+
+
+// rota com protocolo DELETE para remoção no banco de dados
+app.delete('/vagas/:id', function (req, res) {
+    var codigo = req.params.codigo;
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query('DELETE FROM vagas where id = ' + req.params.id, function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+
+//VAGAS E VOLUNTARIOS
+
 
 app.listen(3000)
