@@ -221,6 +221,62 @@ app.delete('/vagas/:id', function (req, res) {
 });
 
 //VAGAS E VOLUNTARIOS
+//create e delete
 
 
+app.get('/candidato/:id', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err)
+            return console.error('error fetching client from pool', err);
+        client.query('SELECT b.* ' +
+            'FROM voluntario_vaga a ' +
+            'INNER JOIN voluntario b ON a.id_voluntario = b.id' +
+            'WHERE a.id_vaga = ' + req.params.id,
+            function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                }
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                console.log(result.rows);
+                res.json(result.rows); // servidor retorna a consulta em formato json
+            });
+    });
+});
+
+app.post('/candidato', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("INSERT INTO voluntario_vaga (id, id_voluntario, id_vaga)  " +
+            "VALUES ('" + req.body.id + "','" + req.body.id_voluntario + "','" + req.body.id_vaga + "')", function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+
+
+// rota com protocolo DELETE para remoção no banco de dados
+app.delete('/candidato/:id', function (req, res) {
+    var codigo = req.params.codigo;
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query('DELETE FROM voluntario_vaga where id = ' + req.params.id, function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
 app.listen(3000)
