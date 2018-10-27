@@ -1,0 +1,46 @@
+CREATE TABLE voluntario(
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255),
+  cpf VARCHAR(255),
+  rg VARCHAR(255),
+  email VARCHAR(255),
+  endereco VARCHAR(255),
+  religiao VARCHAR(255),
+  sexo VARCHAR(255),
+  escolaridade VARCHAR(255),
+  cargoInteresse VARCHAR(255),
+  estadoCivil VARCHAR(255),
+  profissao VARCHAR(255),
+  dtNascimento VARCHAR(255),
+  telefoneContato VARCHAR(255)
+);
+
+CREATE TABLE instituicao(
+  id SERIAL PRIMARY KEY,
+  nomeFantasia VARCHAR(255),
+  razaoSocial VARCHAR(255),
+  cnpj VARCHAR(255),
+  telefone VARCHAR(255),
+  endereco VARCHAR(255),
+  email VARCHAR(255),
+  descricao VARCHAR(255),
+  ramoAtividade VARCHAR(255)
+);
+
+CREATE TABLE vagas(
+  id SERIAL PRIMARY KEY,
+  descricaovaga TEXT,
+  dtinicio DATE,
+  dtfim DATE,
+  cargo VARCHAR(255),
+  id_instituicao INTEGER NOT NULL ,
+  FOREIGN KEY (id_instituicao) REFERENCES instituicao (id)
+);
+
+CREATE TABLE voluntario_vaga(
+  id SERIAL primary key,
+  id_voluntario INTEGER NOT NULL,
+  id_vaga INTEGER NOT NULL,
+  FOREIGN KEY (id_voluntario) REFERENCES voluntario (id),
+  FOREIGN KEY (id_vaga) REFERENCES vagas (id)
+);
