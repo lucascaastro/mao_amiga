@@ -11,7 +11,7 @@ app.use(bodyParser.json())
 
 var config = {
   user: 'postgres', //env var: PGUSER
-  database: 'izagro', //env var: PGDATABASE
+    database: 'mao_amiga', //env var: PGDATABASE
   password: '123456', //env var: PGPASSWORD
   port: 5432, //env var: PGPORT
   max: 10, // max number of clients in the pool
@@ -21,7 +21,7 @@ var config = {
 var pool = new pg.Pool(config);
 
 // rota com protocolo GET para seleção no banco de dados
-app.get('/cliente', function (req, res) {
+app.get('/voluntario', function (req, res) {
 	  pool.connect(function(err, client, done) {
 	     if(err)
 		     return console.error('error fetching client from pool', err);
@@ -38,11 +38,11 @@ app.get('/cliente', function (req, res) {
 	});
 });
 //get que retorna pelo id_cliente
-app.get('/cliente/:id', function (req, res) {
+app.get('/voluntario/:id', function (req, res) {
 	  pool.connect(function(err, client, done) {
 	     if(err)
 		     return console.error('error fetching client from pool', err);
-	     client.query('SELECT * FROM voluntario WHERE id_cliente = ' + req.params.id,
+          client.query('SELECT * FROM voluntario WHERE id = ' + req.params.id,
       function(err, result) {
 		      done();
 		if(err) {
@@ -56,7 +56,7 @@ app.get('/cliente/:id', function (req, res) {
 });
 
 // rota com protocolo POST para inserção no banco de dados
-app.post('/cliente', function (req, res) {
+app.post('/voluntario', function (req, res) {
   pool.connect(function(err, client, done) {
     if(err) {
       return console.error('error fetching client from pool', err);
@@ -74,12 +74,12 @@ app.post('/cliente', function (req, res) {
 });
 
 // rota com protocolo PUT para atualização no banco de dados
-app.put('/cliente', function (req, res) {
+app.put('/voluntario', function (req, res) {
   pool.connect(function(err, client, done) {
     if(err) {
       return console.error('error fetching client from pool', err);
   }
-  client.query("UPDATE tb_cliente SET " +
+      client.query("UPDATE voluntario SET " +
                "nome = '" + req.body.nome + "', " +
                "cpf = '" + req.body.cpf + "', " +
                "endereco = '" + req.body.endereco + "', " +
@@ -102,8 +102,8 @@ app.put('/cliente', function (req, res) {
 
 
 // rota com protocolo DELETE para remoção no banco de dados
-app.delete('/cliente/:id', function (req, res) {
-var codigo = req.params.codigo
+app.delete('/voluntario/:id', function (req, res) {
+    var codigo = req.params.codigo;
 pool.connect(function(err, client, done) {
   if(err) {
     return console.error('error fetching client from pool', err);
@@ -119,4 +119,4 @@ pool.connect(function(err, client, done) {
 });
 });
 
-app.listen(3002)
+app.listen(3000)
