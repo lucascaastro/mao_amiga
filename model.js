@@ -79,21 +79,24 @@ app.put('/voluntario', function (req, res) {
   pool.connect(function(err, client, done) {
     if(err) {
       return console.error('error fetching client from pool', err);
-        client.query("UPDATE voluntario SET " +
-            "nome = '" + req.body.nome + "', " +
-            "cpf = '" + req.body.cpf + "', " +
-            "rg = '" + req.body.rg + "', " +
-            "email = '" + req.body.email + "', " +
-            "endereco = '" + req.body.endereco + "', " +
-            "religiao = '" + req.body.religiao + "', " +
-            "sexo = '" + req.body.sexo + "', " +
-            "escolaridade = '" + req.body.escolaridade + "', " +
-            "cargointeresse = '" + req.body.cargointeresse + "', " +
-            "estadocivil = '" + req.body.estadocivil + "', " +
-            "profissao = '" + req.body.profissao + "', " +
-            "dtnascimento = '" + req.body.dtnascimento + "', " +
-            "telefonecontato = '" + req.body.telefonecontato + "' " +
-            "WHERE id = " + req.body.id, function (err, result) {
+        client.query(```
+        UPDATE voluntario SET 
+            nome = '${req.body.nome}',
+            cpf = 'req.body.cpf',
+            rg = 'req.body.rg',
+            email = 'req.body.email',
+            endereco = 'req.body.endereco',
+            religiao = 'req.body.religiao', 
+            sexo = 'req.body.sexo', 
+            escolaridade = 'req.body.escolaridade',
+            cargointeresse = 'req.body.cargointeresse',
+            estadocivil = 'req.body.estadocivil',
+            profissao = 'req.body.profissao',
+            dtnascimento = 'req.body.dtnascimento', 
+            telefonecontato = 'req.body.telefonecontato' 
+            WHERE id = req.body.id
+        ```, function (err, result) {
+            console.log(err, result)
             done();
             if (err) {
                 return console.error('error running query', err);
