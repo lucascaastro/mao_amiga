@@ -1,0 +1,18 @@
+﻿DROP TABLE TB_CLIENTE
+
+CREATE TABLE tb_cliente(
+id_cliente	SERIAL,
+nome		VARCHAR,
+cpf		VARCHAR,
+endereco	VARCHAR,
+numero		VARCHAR,
+bairro		VARCHAR,
+cidade		VARCHAR,
+estado		VARCHAR,
+telefone	VARCHAR,
+email		VARCHAR		
+);
+
+INSERT INTO tb_cliente(nome,cpf,endereco,numero,bairro,cidade,estado,telefone,email)
+VALUES
+('Lucas Castro','42961492882','rua Fabio Lourenço','1521','Jardim Do Éden','Franca','SP','991349872','lucasgrrock@gmail.com')
