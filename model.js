@@ -384,6 +384,23 @@ app.delete('/user/:id', function (req, res) {
         });
     });
 });
-//
+//INSTITUIÇÃO
+
+app.get('/instituicao/:id', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err)
+            return console.error('error fetching client from pool', err);
+        client.query('SELECT * FROM instituicao WHERE id = ' + req.params.id,
+            function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                }
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                console.log(result.rows);
+                res.json(result.rows); // servidor retorna a consulta em formato json
+            });
+    });
+});
 
 app.listen(3000)
