@@ -230,7 +230,7 @@ app.get('/candidato/:id', function (req, res) {
             return console.error('error fetching client from pool', err);
         client.query('SELECT b.* ' +
             'FROM voluntario_vaga a ' +
-            'INNER JOIN voluntario b ON a.id_voluntario = b.id' +
+            'INNER JOIN voluntario b ON a.id_voluntario = b.id ' +
             'WHERE a.id_vaga = ' + req.params.id,
             function (err, result) {
                 done();
