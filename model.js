@@ -4,6 +4,7 @@ var app = express()
 var bodyParser = require('body-parser')
 var core_use = require('cors');
 var pg = require('pg');
+var Base64 = require('js-base64').Base64;
 
 app.use(core_use());
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -223,7 +224,6 @@ app.delete('/vagas/:id', function (req, res) {
 //VAGAS E VOLUNTARIOS
 //create e delete
 
-
 app.get('/candidato/:id', function (req, res) {
     pool.connect(function (err, client, done) {
         if (err)
@@ -279,4 +279,111 @@ app.delete('/candidato/:id', function (req, res) {
         });
     });
 });
+
+//login
+//get que retorna pelo id_cliente
+app.get('/user/:id', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err)
+            return console.error('error fetching client from pool', err);
+        client.query('SELECT * FROM login WHERE id = ' + req.params.id,
+            function (err, result) {
+                done();
+                if (err) {
+                    return console.error('error running query', err);
+                }
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                console.log(result.rows);
+                res.json(result.rows); // servidor retorna a consulta em formato json
+            });
+    });
+});
+
+// rota com protocolo POST para inserção no banco de dados
+app.post('/user/create', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+
+        client.query("INSERT INTO login(email, senha, tipo, id_table)  " +
+            "VALUES ('" + req.body.email + "','" + Base64.encode(req.body.senha) + "','" + req.body.tipo + "','" + req.body.id_table + "')", function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+app.post('/login', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("SELECT COUNT(*) FROM login " +
+            "WHERE email = '" + req.body.email + "' " + "AND senha = '" + Base64.encode(req.body.senha) + "' AND tipo = '" + req.body.tipo + "';", (err, result) => {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            console.log(result.rows[0].count);
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            if (result.rows[0].count == '1') {
+                res.json(result.rows); //
+            } else {
+                res.status(401);
+                res.json(result.rows); //
+            }
+            //servidor retorna a consulta em formato json
+
+        })
+    });
+});
+
+// rota com protocolo PUT para atualização no banco de dados
+app.put('/vagas', function (req, res) {
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("UPDATE vagas SET " +
+            "descricaovaga = '" + req.body.descricaovaga + "', " +
+            "dtinicio = '" + req.body.dtinicio + "', " +
+            "dtfim = '" + req.body.dtfim + "', " +
+            "id_instituicao = '" + req.body.id_instituicao + "', " +
+            "titulo = '" + req.body.titulo + "' " +
+            "WHERE id = " + req.body.id, function (err, result) {
+            console.log(err, result)
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+
+
+// rota com protocolo DELETE para remoção no banco de dados
+app.delete('/user/:id', function (req, res) {
+    var codigo = req.params.codigo;
+    pool.connect(function (err, client, done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query('DELETE FROM login where id = ' + req.params.id, function (err, result) {
+            done();
+            if (err) {
+                return console.error('error running query', err);
+            }
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.json(result.rows); // servidor retorna a consulta em formato json
+        });
+    });
+});
+//
+
 app.listen(3000)
