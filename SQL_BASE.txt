@@ -1,3 +1,5 @@
+CREATE DATABASE "mao_amiga";
+
 CREATE TABLE voluntario(
   id SERIAL PRIMARY KEY,
   nome VARCHAR(255),
